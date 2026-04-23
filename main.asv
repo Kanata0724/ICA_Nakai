@@ -1,0 +1,19 @@
+clear; close all; clc;
+
+seed = 1;
+inputDir = "./input/";
+inputFiles = ["s1.wav", "s2.wav"];
+
+% Set pseudorandom seed
+rng(seed);
+
+mixMat = ...
+    [0.8, -0.5;
+    -0.7, 0.9];
+
+for iData = 1:numel(inputFiles)
+    inputPath = inputDir + inputFiles(iData);
+    [src(:, iData), fs] = audioread(inputPath);
+end
+
+obs = mixMat * src.'; % mixing 
