@@ -14,8 +14,6 @@ for iData = 1:numel(inputFiles) % 1から2(inputFilesの大きさ)までをiData
     [srcSig(:, iData), fs] = audioread(inputPath); % 信号源の取得（T×N行列）
 end
 
-% Set pseudorandom seed
-rng(seed);
 obsSig = (mixMat * srcSig.').'; % 観測信号を作成（T×M行列）
 
 % 自然勾配法に基づくICAによるBSS
@@ -25,6 +23,8 @@ L = 1000; % 反復回数
 nSrc = 2; % 音源数
 nMic = 2; % マイクロホン数
 
+% Set pseudorandom seed
+rng(seed);
 estSig = ICA(obsSig, u, L, nSrc, nMic); % ICAの実行（y:T×N行列)
 
 soundsc(estSig(:, 2), fs); % 分離信号の再生
