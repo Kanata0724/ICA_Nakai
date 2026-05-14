@@ -1,4 +1,4 @@
-function y = ICA(x, u, L, nSrc, nMic) % 観測信号（T×M行列）、ステップサイズ、反復回数、音源数、マイクロホン数を引数として指定
+function yScale = ICA(x, u, L, nSrc, nMic, refMic) % 観測信号（T×M行列）、ステップサイズ、反復回数、音源数、マイクロホン数を引数として指定
     % M:マイクロホン数,2 N:音源数,2 T:信号長,224001
 
     W = rand(nSrc, nMic); % 分離行列を初期化（W:N×M行列）
@@ -13,5 +13,21 @@ function y = ICA(x, u, L, nSrc, nMic) % 観測信号（T×M行列）、ステッ
         W = W - u * (E - I) * W; % 分離行列の更新（W:2行目と同様）
     end
     
-    y = (W * x.').'; % 観測信号を分離（y:T×N行列）
+    y = W * x.'; % 観測信号を分離（y:N×T行列）
+
+    yScale = local_backProjection(y, W, refMic); %スケール補正（yScale:T×N行列)
+
+end
+
+function yScale = local_backProjection(y, W, refMic) %分離信号（N×T行列）、分離行列（N×M行列）、リファレンス指定
+    y1 = zeros(size(y));
+    y2 = zeros(size(y));
+    y1(1, :) = y(1, :);
+    y2(2, :) = y(2, :);
+
+    y1Scale = inv(W) * y1;
+    y2Scale = inv(W) * y2;
+
+    yScale = ([y1Scale(refMic, :);
+              y2Scale(refMic, :)]).';
 end
