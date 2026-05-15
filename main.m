@@ -65,8 +65,8 @@ if ~exist(outputDir, 'dir') % 指定のフォルダがない場合作成
     mkdir(outputDir);
 end
 
-audiowrite(outputDir+"referenceSignal1.wav", refSig(:, 1), fs); % 音源1のソースイメージ
-audiowrite(outputDir+"referenceSignal2.wav", refSig(:, 2), fs); % 音源2のソースイメージ
-audiowrite(outputDir+"estimatedSignal1.wav", estSig(:, 1), fs); % 分離信号1
-audiowrite(outputDir+"estimatedSignal2.wav", estSig(:, 2), fs); % 分離信号2
-audiowrite(outputDir+"observedSignal.wav", obsSig(:, refMic), fs); % 観測信号
+for i = 1:2 % 音源数分繰り返し
+    audiowrite(sprintf(outputDir+"referenceSignal%d.wav", i), refSig(:, 1), fs); % 音源のソースイメージ
+    audiowrite(sprintf(outputDir+"estimatedSignal%d.wav", i), estSig(:, 1), fs); % 分離信号
+    audiowrite(sprintf(outputDir+"observedSignal%d.wav", i), obsSig(:, refMic), fs); % 観測信号
+end
